@@ -17,6 +17,13 @@ The client half is served from `lib/client.js` (`dsh.client.platform: web`).
 Enabling the bundle mounts the plugin; HMR applies it to a running app, and a
 restart makes sure the client half is rebuilt.
 
+> Note for the app-managed `desktop` profile: `dsh plugin --profile desktop add`
+> only installs the dependency and copies the package; unlike a regular profile
+> it does not enable the bundle. Enable it by adding the package name to
+> `dsh.profile.bundles` in `~/.dsh/profiles/desktop/package.json` (or through the
+> Plugins page). Other profiles enable the installed bundle automatically.
+
+
 ## Development
 
 `lib/` is built and committed; the sources live in `src/`. Rebuild the client with
