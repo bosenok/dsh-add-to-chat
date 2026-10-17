@@ -1,0 +1,6 @@
+# Bundle patch: the profile row that mounts dsh-add-to-chat.
+# Installed as a bundle (dsh.bundle.patch in package.json), so enabling the
+# bundle in the Plugins page (or `dsh plugin add`) is enough; no manual patch edit.
+- insert:
+    - id: add-to-chat
+      name: dsh-add-to-chat

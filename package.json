@@ -1,8 +1,8 @@
 {
   "name": "dsh-add-to-chat",
   "version": "0.1.0",
-  "private": true,
-  "description": "Quote selected chat text into the composer: a floating \"Add to chat\" button over any selection inside the conversation flow",
+  "private": false,
+  "description": "Select chat text and add it to the composer as an annotation.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -13,6 +13,9 @@
   "dsh": {
     "client": {
       "platform": "web"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
     }
   },
   "dependencies": {
@@ -20,5 +23,19 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bosenok/dsh-add-to-chat.git"
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2 <0.3.0"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ]
 }
