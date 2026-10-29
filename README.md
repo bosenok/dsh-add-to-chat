@@ -64,3 +64,36 @@ the repository's Vite config (`npx vite build` → `dist/`, then the wrapper in
 
 MIT — see [LICENSE](LICENSE). Third-party code bundled into `lib/` and its
 licenses are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+### Git Flow
+
+Development follows [Git Flow](https://github.com/git-flow/git-flow-next) via the
+committable `.gitflow` configuration. In a fresh clone activate it once:
+
+```sh
+./scripts/gitflow-setup.sh
+```
+
+(The script runs `git flow config sync` and creates the local `master`/`develop`
+branches. `git flow config sync` alone is enough if both base branches already
+exist.)
+
+| Branch | Purpose |
+|---|---|
+| `master` | released code only; every commit here is tagged `vX.Y.Z` |
+| `develop` | integration branch (repository default branch) |
+| `feature/*` | one change, started from and finished into `develop` |
+| `release/*` | stabilization, started from `develop`, finished into `master` + `develop` |
+| `hotfix/*` | urgent production fix, started from `master`, finished into both |
+
+```sh
+git flow feature start my-change
+# ... conventional commits: feat: …, fix: …, docs: …, chore: …
+git flow feature finish my-change
+
+git flow release start 0.2.0
+# bump the version; update CHANGELOG.md (see Versioning)
+git add -A && git commit -m "chore(release): v0.2.0"
+git flow release finish 0.2.0        # merges to master + develop, creates the tag
+git push origin master develop --tags
+```
