@@ -24,6 +24,36 @@ restart makes sure the client half is rebuilt.
 > Plugins page). Other profiles enable the installed bundle automatically.
 
 
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`).
+Releases are tagged in git (`v0.1.0` and later `v0.1.x` tags), announced
+as GitHub releases and documented in [CHANGELOG.md](./CHANGELOG.md).
+
+`engines.dsh` in `package.json` pins the compatible DSH range.
+
+Bump policy: **patch** — fixes; **minor** — new features without breaking the
+configuration; **major** — breaking changes to the configuration, the session
+format or the supported DSH range.
+
+`CHANGELOG.md` is generated with [git-cliff](https://git-cliff.org/) from
+[Conventional Commits](https://www.conventionalcommits.org/) (`cliff.toml`):
+
+```sh
+./scripts/changelog.sh                 # print unreleased notes
+./scripts/changelog.sh v0.2.0          # add the next release section
+git cliff -o CHANGELOG.md              # full regeneration (curated history is kept otherwise)
+```
+
+To install a specific release instead of a moving branch, pin the tag:
+
+```sh
+dsh plugin --profile desktop add "git+ssh://git@github.com/bosenok/dsh-add-to-chat.git#v0.1.0"
+```
+
+Tags are created on `master` by Git Flow; integration builds live on `develop`
+(install with `#develop` if you want the latest unreleased code).
+
 ## Development
 
 `lib/` is built and committed; the sources live in `src/`. Rebuild the client with
