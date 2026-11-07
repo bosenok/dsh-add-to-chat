@@ -12,4 +12,10 @@ for branch in master develop; do
     echo "created local branch $branch"
   fi
 done
+# Enable the committable Git hooks (release guards).
+if [ -d .githooks ]; then
+  git config core.hooksPath .githooks
+  echo "git hooks enabled: core.hooksPath=.githooks"
+fi
+
 echo "git-flow ready: master + develop, tag prefix v. Current branch: $(git branch --show-current)"

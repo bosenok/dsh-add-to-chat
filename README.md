@@ -45,6 +45,22 @@ format or the supported DSH range.
 git cliff -o CHANGELOG.md              # full regeneration (curated history is kept otherwise)
 ```
 
+**Cutting a release.** Use the guarded helper instead of hand-cutting one:
+
+```sh
+./scripts/release.sh patch              # or minor / major / an explicit x.y.z
+./scripts/release.sh patch --dry-run    # print the plan, change nothing
+```
+
+It refuses a dirty tree or a branch other than `develop`, a target that is not
+strictly newer than every existing tag, an existing tag (local or origin) or
+GitHub release, then bumps `package.json`, prepends the CHANGELOG with
+git-cliff, runs Git Flow, pushes `master`/`develop`/tags and creates the GitHub
+release. The committable hooks (`.githooks/commit-msg`, `.githooks/pre-push`,
+installed by `./scripts/gitflow-setup.sh`) reject a `chore(release): vX` commit
+whose version already exists or does not match `package.json`, and refuse to
+move a published tag or push a backwards version.
+
 To install a specific release instead of a moving branch, pin the tag:
 
 ```sh

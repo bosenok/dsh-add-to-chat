@@ -1,0 +1,24 @@
+#!/bin/sh
+# Guard: never move a published tag, never push a backwards version tag.
+set -eu
+remote=${1:-origin}
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/tags/v*) ;;
+    *) continue ;;
+  esac
+  tag=${remote_ref#refs/tags/}
+  if [ "$remote_sha" != "0000000000000000000000000000000000000000" ] && [ "$remote_sha" != "$local_sha" ]; then
+    echo "pre-push: $tag already exists on $remote at a different commit; published tags are immutable" >&2
+    exit 1
+  fi
+  newest=$(git tag --list 'v[0-9]*' | sed 's/^v//' | grep -v "^${tag#v}$" | sort -V | tail -1)
+  if [ -n "$newest" ]; then
+    top=$(printf '%s\n%s\n' "$newest" "${tag#v}" | sort -V | tail -1)
+    if [ "$top" != "${tag#v}" ]; then
+      echo "pre-push: $tag is older than the existing tag v$newest; refusing to push a backwards release" >&2
+      exit 1
+    fi
+  fi
+done
+exit 0

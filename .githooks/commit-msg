@@ -1,0 +1,37 @@
+#!/bin/sh
+# Guard: a release commit must carry a version that does not exist yet.
+#   chore(release): v0.1.4   with tag v0.1.4 (local or origin) already present
+#   is rejected, and package.json must already hold the same version.
+set -eu
+message_file=${1:-}
+[ -n "$message_file" ] && [ -f "$message_file" ] || exit 0
+subject=$(head -n 1 "$message_file")
+
+case "$subject" in
+  'chore(release): v'*) ;;
+  *) exit 0 ;;
+esac
+version=${subject#'chore(release): v'}
+printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+  echo "commit-msg: release version must be x.y.z (got: $version)" >&2
+  exit 1
+}
+
+git fetch --tags --quiet origin 2>/dev/null || true
+if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+  echo "commit-msg: tag v$version already exists locally — release a newer version (see scripts/release.sh)" >&2
+  exit 1
+fi
+if git ls-remote --exit-code --tags origin "refs/tags/v$version" >/dev/null 2>&1; then
+  echo "commit-msg: tag v$version already exists on origin — release a newer version (see scripts/release.sh)" >&2
+  exit 1
+fi
+
+if [ -f package.json ]; then
+  current=$(python3 -c "import json;print(json.load(open('package.json'))['version'])" 2>/dev/null || true)
+  if [ "$current" != "$version" ]; then
+    echo "commit-msg: package.json says '$current' but the release commit claims '$version'" >&2
+    exit 1
+  fi
+fi
+exit 0
